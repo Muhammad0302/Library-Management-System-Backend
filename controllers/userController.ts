@@ -54,12 +54,6 @@ const adminRegister = async (req: Request, res: Response) => {
 const addUser = async (req: CustomRequest, res: Response) => {
 	const { name, email, password, phoneNumber, addresses } = req.body;
 	console.log('The data in the controller is:', req.body);
-	// if (!(req.admin?.isAdmin)) {
-	//     return res.status(403).json({
-	//         success: false,
-	//         message: 'Permission denied. Only admin users can add users.',
-	//     });
-	// }
 
 	try {
 		// Create a new user document
