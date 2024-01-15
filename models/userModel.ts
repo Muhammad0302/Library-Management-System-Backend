@@ -42,11 +42,6 @@ const userSchema = new Schema<UserDocument>({
 		type: String,
 		required: true,
 	},
-	// role: {
-	//     type: String,
-	//     required: true,
-	//     enum: ["user", "admin"]
-	// },
 	phoneNumber: {
 		type: String,
 		required: true,
