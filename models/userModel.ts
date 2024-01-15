@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -10,7 +10,7 @@ interface Address {
 	country: string;
 }
 
-interface UserDocument extends Document {
+interface UserDocument {
 	name: string;
 	email: string;
 	password: string;
@@ -70,13 +70,6 @@ userSchema.methods.comparePassword = async function (
 	} catch (error: any) {
 		return false;
 	}
-};
-
-// Generate JWT token for the user
-userSchema.methods.generateToken = function () {
-	return jwt.sign({ _id: this._id }, 'sadiqkhangmuhammadsadiq', {
-		expiresIn: '5h',
-	});
 };
 
 const User: Model<UserDocument> = mongoose.model('User', userSchema);
