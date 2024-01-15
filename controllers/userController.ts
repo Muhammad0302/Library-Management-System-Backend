@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import User, { UserDocument } from '../models/userModel';
+import { createUser } from '../services/userServices';
+
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import isAdmin from '../middleware/role';
@@ -51,13 +53,12 @@ const adminRegister = async (req: Request, res: Response) => {
 };
 
 // createUser
-const addUser = async (req: CustomRequest, res: Response) => {
+const addUser = async (req: Request, res: Response) => {
 	const { name, email, password, phoneNumber, addresses } = req.body;
 	console.log('The data in the controller is:', req.body);
 
 	try {
-		// Create a new user document
-		const newUser = await User.create({
+		const result = await createUser({
 			name,
 			email,
 			password,
@@ -65,10 +66,11 @@ const addUser = async (req: CustomRequest, res: Response) => {
 			addresses,
 		});
 
-		res.status(201).json({
-			success: true,
-			user: newUser,
-		});
+		if (result.success) {
+			res.status(201).json(result);
+		} else {
+			res.status(500).json(result);
+		}
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({
