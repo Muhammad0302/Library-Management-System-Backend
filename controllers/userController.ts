@@ -55,7 +55,7 @@ const adminRegister = async (req: Request, res: Response) => {
 // createUser
 const addUser = async (req: Request, res: Response) => {
 	const { name, email, password, phoneNumber, addresses } = req.body;
-	console.log('The data in the controller is ..:', req.body);
+	console.log('The data in the controller is :', req.body);
 
 	try {
 		const result = await createUser({
