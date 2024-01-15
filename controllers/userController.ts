@@ -4,58 +4,12 @@ import { createUser } from '../services/userServices';
 
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
-import isAdmin from '../middleware/role';
-import Admin, { AdminDocument } from '../models/adminModel';
+import generateToken from '../utils/tokenGeneration';
 
-interface CustomRequest extends Request {
-	admin?: AdminDocument;
-}
-
-// Register Admin
-const adminRegister = async (req: Request, res: Response) => {
-	try {
-		const { name, email, password } = req.body;
-		const existingUser = await Admin.findOne({ email });
-		if (existingUser) {
-			res.status(409).json({
-				success: false,
-				message: 'User already exists',
-			});
-		} else {
-			// Create a new admin document asynchronously
-			const newAdmin = await Admin.create({
-				name,
-				email,
-				password,
-				// Assuming isAdmin is set to true by default in your schema
-			});
-
-			// Use the admin document to sign the token
-			const token = jwt.sign(
-				{ id: newAdmin.id, name, email, isAdmin: true },
-				'sadiqkhangmuhammadsadiq',
-				{ expiresIn: '5h' }
-			);
-
-			res.status(201).json({
-				success: true,
-				// token,
-				message: `Admin saved successfully with token: ${token}`,
-			});
-		}
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({
-			success: false,
-			message: 'Internal server error',
-		});
-	}
-};
-
-// createUser
-const addUser = async (req: Request, res: Response) => {
+// SignUp User
+const registerUser = async (req: Request, res: Response) => {
 	const { name, email, password, phoneNumber, addresses } = req.body;
-	console.log('The data in the controller is:', req.body);
+	console.log('The data in the controller is :', req.body);
 
 	try {
 		const result = await createUser({
@@ -84,7 +38,7 @@ const addUser = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
 	try {
-		const user = await Admin.findOne({ email });
+		const user = await User.findOne({ email });
 
 		if (!user) {
 			return res.status(404).json({
@@ -99,11 +53,12 @@ const login = async (req: Request, res: Response) => {
 			return res.status(401).json({ message: 'Invalid password' });
 		}
 
-		const token = user.generateToken();
+		const token = generateToken({ email: user.email });
 
 		res.status(200).json({
 			success: true,
-			message: `User logged in successfully with token: ${token}`,
+			token: token,
+			message: 'User logged in successfully',
 		});
 	} catch (error) {
 		console.error(error);
@@ -111,24 +66,13 @@ const login = async (req: Request, res: Response) => {
 	}
 };
 
-// Generate reset token
-const generateResetToken = async (email: string) => {
-	const user = await User.findOne({ email });
-	if (!user) {
-		return null;
-	}
-
-	const token = user.generateToken();
-	return token;
-};
-
 // forgot password
 const forgotPassword = async (req: Request, res: Response) => {
 	const { email } = req.body;
 
 	try {
-		const resetToken = await generateResetToken(email);
-
+		// const resetToken = await generateResetToken(email);
+		const resetToken = '';
 		if (!resetToken) {
 			return res.status(404).json({ message: 'User not found' });
 		}
@@ -287,8 +231,7 @@ const deleteUser = async (req: Request, res: Response) => {
 };
 
 export {
-	adminRegister,
-	addUser,
+	registerUser,
 	login,
 	forgotPassword,
 	resetPassword,

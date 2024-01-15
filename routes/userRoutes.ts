@@ -1,7 +1,6 @@
 import express from 'express';
 import {
-	adminRegister,
-	addUser,
+	registerUser,
 	login,
 	forgotPassword,
 	resetPassword,
@@ -11,21 +10,16 @@ import {
 	deleteUser,
 } from '../controllers/userController';
 const router = express.Router();
-import isAdmin from '../middleware/role';
 import authenticateAdmin from '../middleware/authenticateAdmin';
 
 router.post('/login', login);
+router.post('/registerUser', registerUser);
 router.post('/forgotPassword', forgotPassword);
 router.post('/resetPassword/:token', resetPassword);
+router.get('/getAllUsers', getAllUsers);
+router.get('/getSingleUser/:id', getSingleUser);
 
-router.post('/adminRegister', adminRegister);
-
-// router.use(authenticateAdmin);
-router.post('/addUser', addUser);
-router.get('/getAllUsers', isAdmin, getAllUsers);
-router.get('/getSingleUser/:id', isAdmin, getSingleUser);
-
-router.put('/updateUser/:id', isAdmin, updateUser);
-router.delete('/deleteUser/:id', isAdmin, deleteUser);
+router.put('/updateUser/:id', updateUser);
+router.delete('/deleteUser/:id', deleteUser);
 
 export default router;
