@@ -10,17 +10,16 @@ import {
 	deleteUser,
 } from '../controllers/userController';
 const router = express.Router();
-import isAdmin from '../middleware/role';
 import authenticateAdmin from '../middleware/authenticateAdmin';
 
 router.post('/login', login);
 router.post('/registerUser', registerUser);
 router.post('/forgotPassword', forgotPassword);
 router.post('/resetPassword/:token', resetPassword);
-router.get('/getAllUsers', isAdmin, getAllUsers);
-router.get('/getSingleUser/:id', isAdmin, getSingleUser);
+router.get('/getAllUsers', getAllUsers);
+router.get('/getSingleUser/:id', getSingleUser);
 
-router.put('/updateUser/:id', isAdmin, updateUser);
-router.delete('/deleteUser/:id', isAdmin, deleteUser);
+router.put('/updateUser/:id', updateUser);
+router.delete('/deleteUser/:id', deleteUser);
 
 export default router;

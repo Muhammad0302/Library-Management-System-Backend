@@ -4,13 +4,7 @@ import { createUser } from '../services/userServices';
 
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
-import isAdmin from '../middleware/role';
-import Admin, { AdminDocument } from '../models/adminModel';
 import generateToken from '../utils/tokenGeneration';
-
-interface CustomRequest extends Request {
-	admin?: AdminDocument;
-}
 
 // SignUp User
 const registerUser = async (req: Request, res: Response) => {
