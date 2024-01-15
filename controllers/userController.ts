@@ -6,6 +6,7 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import isAdmin from '../middleware/role';
 import Admin, { AdminDocument } from '../models/adminModel';
+import generateToken from '../utils/tokenGeneration';
 
 interface CustomRequest extends Request {
 	admin?: AdminDocument;
@@ -52,7 +53,7 @@ const adminRegister = async (req: Request, res: Response) => {
 	}
 };
 
-// createUser
+// SignUp User
 const addUser = async (req: Request, res: Response) => {
 	const { name, email, password, phoneNumber, addresses } = req.body;
 	console.log('The data in the controller is :', req.body);
@@ -84,7 +85,7 @@ const addUser = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
 	try {
-		const user = await Admin.findOne({ email });
+		const user = await User.findOne({ email });
 
 		if (!user) {
 			return res.status(404).json({
@@ -99,11 +100,12 @@ const login = async (req: Request, res: Response) => {
 			return res.status(401).json({ message: 'Invalid password' });
 		}
 
-		const token = user.generateToken();
+		const token = generateToken({ email: user.email });
 
 		res.status(200).json({
 			success: true,
-			message: `User logged in successfully with token: ${token}`,
+			token: token,
+			message: 'User logged in successfully',
 		});
 	} catch (error) {
 		console.error(error);
