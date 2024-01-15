@@ -12,49 +12,8 @@ interface CustomRequest extends Request {
 	admin?: AdminDocument;
 }
 
-// Register Admin
-const adminRegister = async (req: Request, res: Response) => {
-	try {
-		const { name, email, password } = req.body;
-		const existingUser = await Admin.findOne({ email });
-		if (existingUser) {
-			res.status(409).json({
-				success: false,
-				message: 'User already exists',
-			});
-		} else {
-			// Create a new admin document asynchronously
-			const newAdmin = await Admin.create({
-				name,
-				email,
-				password,
-				// Assuming isAdmin is set to true by default in your schema
-			});
-
-			// Use the admin document to sign the token
-			const token = jwt.sign(
-				{ id: newAdmin.id, name, email, isAdmin: true },
-				'sadiqkhangmuhammadsadiq',
-				{ expiresIn: '5h' }
-			);
-
-			res.status(201).json({
-				success: true,
-				// token,
-				message: `Admin saved successfully with token: ${token}`,
-			});
-		}
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({
-			success: false,
-			message: 'Internal server error',
-		});
-	}
-};
-
 // SignUp User
-const addUser = async (req: Request, res: Response) => {
+const registerUser = async (req: Request, res: Response) => {
 	const { name, email, password, phoneNumber, addresses } = req.body;
 	console.log('The data in the controller is :', req.body);
 
@@ -278,8 +237,7 @@ const deleteUser = async (req: Request, res: Response) => {
 };
 
 export {
-	adminRegister,
-	addUser,
+	registerUser,
 	login,
 	forgotPassword,
 	resetPassword,

@@ -1,7 +1,6 @@
 import express from 'express';
 import {
-	adminRegister,
-	addUser,
+	registerUser,
 	login,
 	forgotPassword,
 	resetPassword,
@@ -15,13 +14,9 @@ import isAdmin from '../middleware/role';
 import authenticateAdmin from '../middleware/authenticateAdmin';
 
 router.post('/login', login);
+router.post('/registerUser', registerUser);
 router.post('/forgotPassword', forgotPassword);
 router.post('/resetPassword/:token', resetPassword);
-
-router.post('/adminRegister', adminRegister);
-
-// router.use(authenticateAdmin);
-router.post('/addUser', addUser);
 router.get('/getAllUsers', isAdmin, getAllUsers);
 router.get('/getSingleUser/:id', isAdmin, getSingleUser);
 
