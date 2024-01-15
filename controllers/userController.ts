@@ -113,24 +113,13 @@ const login = async (req: Request, res: Response) => {
 	}
 };
 
-// Generate reset token
-const generateResetToken = async (email: string) => {
-	const user = await User.findOne({ email });
-	if (!user) {
-		return null;
-	}
-
-	const token = user.generateToken();
-	return token;
-};
-
 // forgot password
 const forgotPassword = async (req: Request, res: Response) => {
 	const { email } = req.body;
 
 	try {
-		const resetToken = await generateResetToken(email);
-
+		// const resetToken = await generateResetToken(email);
+		const resetToken = '';
 		if (!resetToken) {
 			return res.status(404).json({ message: 'User not found' });
 		}
